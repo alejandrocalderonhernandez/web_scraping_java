@@ -20,7 +20,15 @@ public class ThreadUtil {
 
     public static void sleepMedium() {
         try {
-            TimeUnit.SECONDS.sleep(15);
+            TimeUnit.SECONDS.sleep(10);
+        } catch (InterruptedException e) {
+            logger.error("Sleep thread fail");
+        }
+    }
+
+    public static void sleepSmall() {
+        try {
+            TimeUnit.SECONDS.sleep(2);
         } catch (InterruptedException e) {
             logger.error("Sleep thread fail");
         }

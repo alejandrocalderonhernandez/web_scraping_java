@@ -3,6 +3,7 @@ package com.alejandro.info.util;
 import com.alejandro.info.model.MailModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -24,8 +25,8 @@ public class MailUtil {
     private static final String PORT_PROP = "mail.smtp.port";
 
     private static final String HOST_VALUE= "smtp.gmail.com";
-    private static final String USER_VALUE= "eagle_logistics";
-    private static final String PASS_VALUE= "12345678";
+    private static final String USER_VALUE= "eagle.log7";
+    private static final String PASS_VALUE= "password";
     private static final String AUTH_VALUE= "true";
     private static final String STARTTLS_VALUE = "true";
     private static final String PORT_VALUE = "587";
@@ -42,20 +43,20 @@ public class MailUtil {
         this.props.put(PORT_PROP, PORT_VALUE);
     }
 
-    public void sendMails(final Set<String> destinations) {
-        destinations.forEach(this::sendMail);
+    public void sendMails(final Set<String> destinations, String body) {
+        destinations.forEach(mail -> this.sendMail(mail, body));
     }
 
 
-    private void sendMail(final String destination) {
-        MailModel mail = new MailModel(destination, "subject", "body");
+    private void sendMail(final String destination, String body) {
+        MailModel mail = new MailModel(destination, "Noticias covid",body);
         Session session = Session.getDefaultInstance(this.props);
         MimeMessage message = new MimeMessage(session);
         try {
             message.setFrom(new InternetAddress("user"));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(mail.getDestination()));
             message.setSubject(mail.getSubject());
-            message.setText(mail.getBody());
+            message.setContent(mail.getBody(), "text/html");
             Transport transport = session.getTransport(PROTOCOL);
             transport.connect(HOST_VALUE, USER_VALUE, PASS_VALUE);
             transport.sendMessage(message, message.getAllRecipients());
